@@ -36,7 +36,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        # --ignore-scripts : evite de compiler isolated-vm (dep native transitive de
+        # n8n-workflow, inutile au build : on ne se sert que des types TypeScript).
+        run: npm install --ignore-scripts --no-audit --no-fund
 
       - name: Build
         run: npm run build
@@ -45,6 +47,8 @@ jobs:
         run: npm run lint || echo "lint warnings — non bloquant pour la publication"
 
       - name: Publish to npm with provenance
-        run: npm publish --provenance --access public
+        # --ignore-scripts : le dist/ est deja construit a l'etape Build ; on evite
+        # que prepublishOnly relance build+lint (et re-tente isolated-vm).
+        run: npm publish --provenance --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
