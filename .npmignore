@@ -1,0 +1,7 @@
+# Ne publier que le code compile (dist/) — cf. champ "files" du package.json.
+# Tout le reste est exclu du tarball npm.
+*
+!dist/**
+!LICENSE.md
+!README.md
+!package.json

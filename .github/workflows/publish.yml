@@ -1,0 +1,50 @@
+name: Publish to npm (with provenance)
+
+# Publication du paquet n8n-nodes-layerone sur npm AVEC provenance.
+# La provenance (attestation de la chaine de build, exigee par n8n pour la
+# verification depuis mai 2026) est generee automatiquement par `npm publish
+# --provenance` quand le workflow tourne sur GitHub Actions avec les bonnes
+# permissions OIDC (`id-token: write`).
+#
+# Declenchement : a la creation d'une release GitHub (tag de version).
+# Prerequis cote proprietaire :
+#   - Secret de depot `NPM_TOKEN` = jeton npm "Automation" (compte npm requis).
+#   - Le paquet doit etre publie depuis ce workflow pour que npm enregistre la
+#     provenance ; une 1re publication manuelle SANS provenance ne convient pas
+#     pour la verification n8n.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write # requis pour la provenance npm (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

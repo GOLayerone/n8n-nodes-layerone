@@ -1,0 +1,63 @@
+{
+  "name": "n8n-nodes-layerone",
+  "version": "1.0.0",
+  "description": "Noeuds n8n pour les API LayerOne : DocX (generation de documents Word/PDF, factures Factur-X) et Sign (signature electronique eIDAS / PAdES).",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "layerone",
+    "docx",
+    "sign",
+    "facturx",
+    "pdf",
+    "electronic-signature",
+    "eidas"
+  ],
+  "license": "MIT",
+  "homepage": "https://dev.layerone.fr/integrations.html",
+  "author": {
+    "name": "LayerOne",
+    "email": "contact@goprotect.fr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/layerone/n8n-nodes-layerone.git"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/DocXApi.credentials.js",
+      "dist/credentials/SignApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/DocX/DocX.node.js",
+      "dist/nodes/Sign/Sign.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "gulp": "^5.0.0",
+    "n8n-workflow": "*",
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
